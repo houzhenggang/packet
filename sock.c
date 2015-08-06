@@ -1,11 +1,9 @@
 #include <sys/types.h>
-#include <ifaddrs.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 #include <fcntl.h>
 
 #ifdef __linux__
+#include <ifaddrs.h>
 #include <netpacket/packet.h>
 #endif
 
