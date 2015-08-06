@@ -17,7 +17,7 @@
 int sock_open_raw(const char *iface_name) {
 	struct ifaddrs *ifp = NULL, *curr;
 	struct sockaddr_ll sa;
-	int fd;
+	int fd, has_addr = 0;
 
 	if (getifaddrs(&ifp) < 0) {
 		return -1;
@@ -30,13 +30,15 @@ int sock_open_raw(const char *iface_name) {
 
 		if (strcmp(curr->ifa_name, iface_name) == 0) {
 			memcpy(&sa, curr->ifa_addr, sizeof(struct sockaddr_ll));
-			freeifaddrs(ifp);
-			return 1;
+			has_addr = 1;
+			break;
+
 		}
 	}
 
-	freeifaddrs(ifp);
-	return -1;
+	if (has_addr == 0) {
+		return -1;
+	}
 
 	fd = socket(PF_PACKET, SOCK_RAW, 0);
 	if (fd < 0) {

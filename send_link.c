@@ -20,6 +20,12 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	
+	fd = sock_open_raw(argv[1]);
+	if (fd < 0) {
+		perror("sock_open_raw");
+		return EXIT_FAILURE;
+	}
+	
 	len = packet_read(STDIN_FILENO, pktbuf, sizeof(pktbuf));
 	if (len < 0) {
 		perror("packet_read");
@@ -27,12 +33,6 @@ int main(int argc, char *argv[]) {
 	}
 	
 	close(STDIN_FILENO); 
-	fd = sock_open_raw(argv[1]);
-	if (fd < 0) {
-		perror("sock_open_raw");
-		return EXIT_FAILURE;
-	}
-
 	if (write(fd, pktbuf, (size_t)len) != len) {
 		perror("sendto");
 		return EXIT_FAILURE;
