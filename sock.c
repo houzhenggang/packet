@@ -3,13 +3,16 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <fcntl.h>
 
 #ifdef __linux__
 #include <netpacket/packet.h>
 #endif
 
 #ifdef __FreeBSD__
-
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <net/bpf.h>
 #endif
 
 
@@ -52,5 +55,21 @@ int sock_open_raw(const char *iface_name) {
 	return fd;
 }
 #elif __FreeBSD__ /* FreeBSD version of sock_open_raw */
+int sock_open_raw(const char *iface_name) {
+	int fd;
+	struct ifreq ifr;
 
+	fd = open("/dev/bpf", O_RDWR);
+	if (fd < 0) {
+		return -1;
+	}
+
+	memset(&ifr, 0, sizeof(ifr));
+	strncpy(ifr.ifr_name, iface_name, IFNAMSIZ);
+	if (ioctl(fd, BIOCSETIF, &ifr) < 0) {
+		return -1;
+	}
+
+	return fd;
+}
 #endif
