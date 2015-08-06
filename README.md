@@ -3,7 +3,7 @@ packet
 
 TODO: Write docs
 
-compile: clang -o send_link *.c
+compile: make
 
 use: ./dummy_arp.pl | sudo ./send_link wlp3s0
 
