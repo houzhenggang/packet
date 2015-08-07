@@ -22,3 +22,6 @@ ssize_t packet_read(int fd, void *buf, size_t count) {
 	return nread;
 }
 
+ssize_t packet_write(int fd, void *buf, size_t count) {
+	return write(fd, buf, count);
+}
